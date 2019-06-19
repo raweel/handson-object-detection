@@ -4,8 +4,9 @@ import cv2
 import time
 import numpy as np
 
+
 app = Flask(__name__)
-camera = PiVideoStream(resolution=(400, 304), framerate=10).start()
+camera = PiVideoStream(resolution=(400, 304), framerate=5).start()
 time.sleep(2)
 
 net = cv2.dnn.readNetFromCaffe('/home/pi/models/MobileNetSSD_deploy.prototxt',
@@ -53,7 +54,7 @@ def gen(camera):
     while True:
         frame = camera.read()
         processed_frame = detect(frame.copy())
-        ret, jpeg = cv2.imencode('.jpg', frame)
+        ret, jpeg = cv2.imencode('.jpg', processed_frame)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n\r\n')
 
